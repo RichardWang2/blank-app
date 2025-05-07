@@ -7,18 +7,27 @@ st.title("Missiongmind Backend Logs")
 user_id = st.text_input("User ID")
 chatlog_id = st.text_input("Chatlog ID")
 worker = st.selectbox("Worker", ["document_worker"])
-environment = st.selectbox("Environment", ["dev"])
+environment = st.selectbox("Environment", ["dev", "mhbe"])
 
 # Function to show logs
 def show_logs(user_id, chatlog_id, worker, environment):
-    # You should replace these connection details with your actual database credentials
-    conn = psycopg2.connect(
-        dbname=st.secrets['DB_NAME'],
-        user=st.secrets['DB_USER'],
-        password=st.secrets['DB_PASSWORD'],
-        host=st.secrets['DB_HOST'],
-        port=st.secrets['DB_PORT']
-    )
+    # Connect to the appropriate database based on environment
+    if environment == "dev":
+        conn = psycopg2.connect(
+            dbname=st.secrets['DB_NAME'],
+            user=st.secrets['DB_USER'],
+            password=st.secrets['DB_PASSWORD'],
+            host=st.secrets['DB_HOST'],
+            port=st.secrets['DB_PORT']
+        )
+    elif environment == "mhbe":
+        conn = psycopg2.connect(
+            dbname=st.secrets['MHBE_DB_NAME'],
+            user=st.secrets['MHBE_DB_USER'],
+            password=st.secrets['MHBE_DB_PASSWORD'],
+            host=st.secrets['MHBE_DB_HOST'],
+            port=st.secrets['MHBE_DB_PORT']
+        )
     cur = conn.cursor()
     try:
         query = """
